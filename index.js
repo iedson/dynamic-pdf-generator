@@ -2,17 +2,24 @@
 const fs = require("fs");
 const axios = require("axios");
 const inquirer = require("inquirer");
-// const HTML5ToPDF = require("html5-to-pdf");
-// const path = require("path");
+const HTML5ToPDF = require("html5-to-pdf");
+const path = require("path");
 
 
 
 inquirer
-  .prompt({
+  .prompt([
+    {
     message: "Enter your GitHub username:",
     name: "username"
-  })
-  .then(function({ username }) {
+  },
+  {
+    type: 'input',
+    name: 'userColor',
+    message: 'Choose your background color'
+  }
+])
+  .then(function({ username, userColor }) {
     //user info github api
     const queryUrl = `https://api.github.com/users/${username}`;
     axios.get(queryUrl).then(res => {
@@ -36,6 +43,9 @@ inquirer
       //number of github accounts following
       const following = res.data.following;
       //number of github stars
+
+      //user picked color
+      const pickColor = userColor;
       
     //create HTML
 
@@ -47,57 +57,54 @@ inquirer
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <meta http-equiv="X-UA-Compatible" content="ie=edge">
           <title>${profName} Developer Profile</title>
+          <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+          <link href="https://fonts.googleapis.com/css?family=Caveat&display=swap" rel="stylesheet">
+          <link rel="stylesheet" href="style.css">
+          
         </head>
         <body>
-          <header>${profName}</header>
-          <img>${profImg}</img>
-          <div>${githubU}</div>
-          <div>${blog}</div>
+        <div class="jumbotron" style="background-color: ${pickColor}">
+          <div>${profName}</div>
+          <img src="${profImg}">
+        </div>
+        <div class="container">
           <div>${userBio}</div>
-          <div>${location}</div>
+          
+          <div>${blog}</div>
+          
+          <div class="fas fa-map-marked-alt">${location}</div>
           <div>${numRepo}</div>
           <div>${followers}</div>
           <div>${following}</div>
+          <a href="${githubU}"</a>
+          </div>
         </body>
         </html>
       `;
       
     })
-    .then(htmlStr => {
-      //turn js to html
-      fs.writeFile("index.html", htmlStr, (err) => {
-        if (err) {
-          throw err;
-        }
-        console.log(`Created ${username} index file, check it out!`)
-      });
-    })
+    .then(() => {
+      // convert to pdf 
+      const createPDF = async () => {
+        const html5ToPDF = new HTML5ToPDF({
+          inputPath: path.join(__dirname, "./index.html"),
+          outputPath: path.join(__dirname, "./developer.pdf"),
+          include: [
+            path.join(__dirname, "./style.css")
+          ],
+          options: { printBackground: true } 
+        });
+        await html5ToPDF.start();
+        await html5ToPDF.build();
+        await html5ToPDF.close();
+        console.log("DONE");
+        process.exit(0);
+        };
+      return createPDF();
+    });
   });
-
     
- 
-
- 
-    // .then(() => {
-    
-    //   //convert html to pdf
-    //   const run = async () => {
-    //     const html5ToPDF = new HTML5ToPDF({
-    //       inputPath: path.join(__dirname, './index.html'),
-    //       outputPath: path.join(__dirname, './developer.pdf'),
-    //       options: { printBackground: true }
-    //     });
-    //     await html5ToPDF.start();
-    //     await html5ToPDF.build();
-    //     await html5ToPDF.close();
-    //     console.log("DONE");
-    //     process.exit(0);
-    //   };
-    //   return run();
-    // });
   
-
-
 
 
   //api object info
