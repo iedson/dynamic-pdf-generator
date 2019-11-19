@@ -1,9 +1,9 @@
+
 const fs = require("fs");
 const axios = require("axios");
 const inquirer = require("inquirer");
-const HTML5ToPDF = require("html5-to-pdf");
-const path = require("path");
-let htmlStr = ``;
+// const HTML5ToPDF = require("html5-to-pdf");
+// const path = require("path");
 
 
 
@@ -16,6 +16,7 @@ inquirer
     //user info github api
     const queryUrl = `https://api.github.com/users/${username}`;
     axios.get(queryUrl).then(res => {
+      
       //user name
       const profName = res.data.login;
       //profile image
@@ -35,13 +36,10 @@ inquirer
       //number of github accounts following
       const following = res.data.following;
       //number of github stars
-
-
       
-
     //create HTML
 
-      htmlStr = `
+      return  htmlStr = `
         <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -52,7 +50,6 @@ inquirer
         </head>
         <body>
           <header>${profName}</header>
-
           <img>${profImg}</img>
           <div>${githubU}</div>
           <div>${blog}</div>
@@ -61,35 +58,45 @@ inquirer
           <div>${numRepo}</div>
           <div>${followers}</div>
           <div>${following}</div>
-
         </body>
         </html>
       `;
+      
     })
-
-    //turn js to html
     .then(htmlStr => {
-      fs.writeFile("index.html", htmlStr, () => {
+      //turn js to html
+      fs.writeFile("index.html", htmlStr, (err) => {
+        if (err) {
+          throw err;
+        }
+        console.log(`Created ${username} index file, check it out!`)
       });
     })
-    .then(() => {
-    
-      //convert html to pdf
-      const run = async () => {
-        const html5ToPDF = new HTML5ToPDF({
-          inputPath: path.join(__dirname, './index.html'),
-          outputPath: path.join(__dirname, './developer.pdf'),
-          options: { printBackground: true }
-        });
-        await html5ToPDF.start();
-        await html5ToPDF.build();
-        await html5ToPDF.close();
-        console.log("DONE");
-        process.exit(0);
-      };
-      return run();
-    });
   });
+
+    
+ 
+
+ 
+    // .then(() => {
+    
+    //   //convert html to pdf
+    //   const run = async () => {
+    //     const html5ToPDF = new HTML5ToPDF({
+    //       inputPath: path.join(__dirname, './index.html'),
+    //       outputPath: path.join(__dirname, './developer.pdf'),
+    //       options: { printBackground: true }
+    //     });
+    //     await html5ToPDF.start();
+    //     await html5ToPDF.build();
+    //     await html5ToPDF.close();
+    //     console.log("DONE");
+    //     process.exit(0);
+    //   };
+    //   return run();
+    // });
+  
+
 
 
 
