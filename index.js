@@ -58,30 +58,43 @@ inquirer
           <meta http-equiv="X-UA-Compatible" content="ie=edge">
           <title>${profName} Developer Profile</title>
           <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-          <link href="https://fonts.googleapis.com/css?family=Caveat&display=swap" rel="stylesheet">
+          <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap" rel="stylesheet">
           <link rel="stylesheet" href="style.css">
           
         </head>
         <body>
-        <div class="jumbotron" style="background-color: ${pickColor}">
-          <div>${profName}</div>
-          <img src="${profImg}">
+        <div class="jumbotron" style="background-color:${pickColor}"></div>
+        <div class="card" style="width: 18rem;">
+          <img src="${profImg}" class="card-img-top" alt="${profName} Developer Profile">
+          <div class="card-body">
+          <h5 class="card-title">${profName}</h5>
+          <p class="card-text">${userBio}</p>
+          <a href="${githubU}" class="btn btn-primary">View Full Profile</a>
+          </div>
         </div>
         <div class="container">
-          <div>${userBio}</div>
-          
-          <div>${blog}</div>
-          
-          <div class="fas fa-map-marked-alt">${location}</div>
-          <div>${numRepo}</div>
-          <div>${followers}</div>
-          <div>${following}</div>
-          <a href="${githubU}"</a>
+          <div class="card col-md-3">
+            <div class="fas fa-map-marked-alt">${location}</div>
           </div>
+          <div class="card col-md-3">
+            <div>${blog}</div>
+          </div>
+          <div class="card col-md-3">
+            <div>${numRepo}</div>
+          </div>
+          <div class="card col-md-3">
+            <div>${followers}</div>
+            <div>${following}</div>
+          </div>
+        </div>
         </body>
         </html>
       `;
       
+    })
+    .then(htmlStr => {
+      fs.writeFile("index.html", htmlStr, () => {
+      });
     })
     .then(() => {
       // convert to pdf 

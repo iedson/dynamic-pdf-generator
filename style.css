@@ -1,4 +1,9 @@
 body {
     display: flex;
     flex-direction: column;
+    font-family: 'Nanum Gothic', sans-serif;
+}
+.container {
+    display: flex;
+    align-items: center;
 }
